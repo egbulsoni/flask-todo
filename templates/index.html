@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        .container {
+            margin-top: 2rem;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+        }
+
+        .delete-btn {
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Minhas Tarefas</h1>
+            <form method="POST" class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="text" name="tarefa" placeholder="Nova tarefa">
+                </div>
+                <div class="control">
+                    <button class="button is-primary" type="submit">Adicionar</button>
+                </div>
+            </form>
+            <div class="box" style="margin-top: 1rem;">
+                <ul>
+                    {% for id, nome in tarefas %}
+                    <li class="task-item">
+                        <span>{{ nome }}</span>
+                        <a href="{{ url_for('deletar', id=id) }}"
+                            class="button is-danger is-small delete-btn">Deletar</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
