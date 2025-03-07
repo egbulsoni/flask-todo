@@ -4,7 +4,11 @@ import os
 
 app = Flask(__name__)
 
+# Debug: pra ver se o app tá iniciando
+print("Iniciando o Flask app...")
+
 def criar_banco():
+    print("Criando banco de dados...")
     conn = sqlite3.connect('tarefas.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS tarefas (id INTEGER PRIMARY KEY, nome TEXT)''')
@@ -42,5 +46,6 @@ def deletar(id):
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    port = int(os.getenv("PORT", 5000))  # Usa a porta do Railway ou 5000 como fallback
+    port = int(os.getenv("PORT", 5000))
+    print(f"Rodando Flask na porta {port}...")
     app.run(host='0.0.0.0', port=port, debug=True)
