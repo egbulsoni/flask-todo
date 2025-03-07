@@ -12,9 +12,14 @@ def criar_banco():
     conn = sqlite3.connect('tarefas.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS tarefas (id INTEGER PRIMARY KEY, nome TEXT)''')
+    # Adiciona tarefas iniciais toda vez que o banco for criado
+    c.execute("INSERT OR IGNORE INTO tarefas (id, nome) VALUES (1, 'Teste 1')")
+    c.execute("INSERT OR IGNORE INTO tarefas (id, nome) VALUES (2, 'Teste 2')")
     conn.commit()
     conn.close()
+    print("Banco criado com sucesso!")
 
+    
 @app.route('/', methods=['GET', 'POST'])
 def home():
     criar_banco()
