@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+import os
 
 app = Flask(__name__)
 
@@ -21,13 +22,12 @@ def home():
         c.execute("INSERT INTO tarefas (nome) VALUES (?)", (nova_tarefa,))
         conn.commit()
         conn.close()
-        return redirect(url_for('home'))  # Volta pra página principal após adicionar
+        return redirect(url_for('home'))
 
-    # Pega as tarefas com id e nome
     conn = sqlite3.connect('tarefas.db')
     c = conn.cursor()
     c.execute("SELECT id, nome FROM tarefas")
-    tarefas = c.fetchall()  # Pega tudo como tuplas (id, nome)
+    tarefas = c.fetchall()
     conn.close()
 
     return render_template('index.html', tarefas=tarefas)
@@ -39,7 +39,8 @@ def deletar(id):
     c.execute("DELETE FROM tarefas WHERE id = ?", (id,))
     conn.commit()
     conn.close()
-    return redirect(url_for('home'))  # Volta pra página principal após deletar
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))  # Usa a porta do Railway ou 5000 como fallback
+    app.run(host='0.0.0.0', port=port, debug=True)
