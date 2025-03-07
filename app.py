@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
 import os
 
 app = Flask(__name__)
@@ -7,47 +6,30 @@ app = Flask(__name__)
 # Debug: pra ver se o app tá iniciando
 print("Iniciando o Flask app...")
 
-def criar_banco():
-    print("Criando banco de dados...")
-    conn = sqlite3.connect('tarefas.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS tarefas (id INTEGER PRIMARY KEY, nome TEXT)''')
-    # Adiciona tarefas iniciais toda vez que o banco for criado
-    c.execute("INSERT OR IGNORE INTO tarefas (id, nome) VALUES (1, 'Teste 1')")
-    c.execute("INSERT OR IGNORE INTO tarefas (id, nome) VALUES (2, 'Teste 2')")
-    conn.commit()
-    conn.close()
-    print("Banco criado com sucesso!")
+# Usa uma lista em memória em vez de SQLite
+tarefas = [("Teste 1", 1), ("Teste 2", 2)]  # Simula o formato (nome, id)
 
-    
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    criar_banco()
-
+    print("Acessando a rota home...")
+    global tarefas
     if request.method == 'POST':
         nova_tarefa = request.form['tarefa']
-        conn = sqlite3.connect('tarefas.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO tarefas (nome) VALUES (?)", (nova_tarefa,))
-        conn.commit()
-        conn.close()
+        # Adiciona a nova tarefa com um "id" incremental
+        novo_id = max([t[1] for t in tarefas], default=0) + 1
+        tarefas.append((nova_tarefa, novo_id))
+        print(f"Tarefa adicionada: {nova_tarefa}, ID: {novo_id}")
         return redirect(url_for('home'))
 
-    conn = sqlite3.connect('tarefas.db')
-    c = conn.cursor()
-    c.execute("SELECT id, nome FROM tarefas")
-    tarefas = c.fetchall()
-    conn.close()
-
-    return render_template('index.html', tarefas=tarefas)
+    print(f"Tarefas atuais: {tarefas}")
+    return render_template('index.html', tarefas=[(t[1], t[0]) for t in tarefas])  # Inverte pra o template
 
 @app.route('/deletar/<int:id>')
 def deletar(id):
-    conn = sqlite3.connect('tarefas.db')
-    c = conn.cursor()
-    c.execute("DELETE FROM tarefas WHERE id = ?", (id,))
-    conn.commit()
-    conn.close()
+    print(f"Tentando deletar tarefa com ID: {id}")
+    global tarefas
+    tarefas = [t for t in tarefas if t[1] != id]
+    print(f"Tarefas após deletar: {tarefas}")
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
