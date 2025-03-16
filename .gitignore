@@ -1,2 +1,37 @@
-venv
+# Ambiente virtual
+venv/
+
+# Deploy-specific
 .vercel
+Procfile  # Só se não for usar mesmo
+
+# Banco de dados
+*.db
+*.sqlite3
+instance/
+
+# Arquivos de cache/bytecode do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Configurações locais
+.env
+
+# Logs
+*.log
+
+# Dependências e builds
+*.egg-info/
+dist/
+build/
+
+# Editores/IDEs
+.vscode/
+.idea/
+*.swp
+
+# Testes
+.pytest_cache/
+coverage.xml
+.coverage
